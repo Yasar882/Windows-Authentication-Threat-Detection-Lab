@@ -1,0 +1,7 @@
+index=windows "4625"
+| rex field=_raw "<Data Name='TargetUserName'>(?<TargetUserName>[^<]*)</Data>"
+| rex field=_raw "<Data Name='IpAddress'>(?<SourceIP>[^<]*)</Data>"
+| rex field=_raw "<Data Name='WorkstationName'>(?<WorkstationName>[^<]*)</Data>"
+| rex field=_raw "<Data Name='LogonType'>(?<LogonType>\d+)</Data>"
+| table _time host TargetUserName SourceIP WorkstationName LogonType
+| sort - _time

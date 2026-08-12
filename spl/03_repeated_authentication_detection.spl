@@ -1,0 +1,10 @@
+index=windows "4625"
+| rex field=_raw "<EventID>(?<EventCode>\d+)</EventID>"
+| rex field=_raw "<Data Name='TargetUserName'>(?<TargetUserName>[^<]*)</Data>"
+| rex field=_raw "<Data Name='IpAddress'>(?<SourceIP>[^<]*)</Data>"
+| rex field=_raw "<Data Name='WorkstationName'>(?<WorkstationName>[^<]*)</Data>"
+| rex field=_raw "<Data Name='LogonType'>(?<LogonType>\d+)</Data>"
+| bin _time span=5m
+| stats count as FailedAttempts by _time SourceIP TargetUserName WorkstationName LogonType
+| where FailedAttempts >= 3
+| sort - FailedAttempts
